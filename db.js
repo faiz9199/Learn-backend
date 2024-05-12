@@ -1,6 +1,8 @@
 const mongoose = require("mongoose")
 
-mongoose.connect("mongodb://localhost:27017/backend").then(()=>{
+const URL = process.env.MONGO_URL;
+
+mongoose.connect(URL).then(()=>{
     console.log('MongoDB connected')
 }).catch((error)=> {
     console.log(error)

@@ -7,8 +7,9 @@ const {
   updateProduct,
   deleteProduct,
 } = require("../controllers/productControllers");
+const { ensureAuthenticated } = require("../utils/auth");
 
-router.get("/", getProducts);
+router.get("/",ensureAuthenticated, getProducts);
 router.get("/category/:categoryName", getProductsByCategory);
 router.post("/", createProduct);
 router.put("/:id", updateProduct);
