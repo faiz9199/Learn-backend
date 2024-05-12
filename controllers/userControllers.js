@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+// POST request to register a user
 const registerUser = async (req, res) => {
   const { fullName, email, password } = req.body;
   try {
@@ -25,6 +26,7 @@ const registerUser = async (req, res) => {
   }
 };
 
+// POST request to login a user
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -44,20 +46,27 @@ const loginUser = async (req, res) => {
     const token = jwt.sign(tokenObject, process.env.SECRET, {
       expiresIn: "4h",
     });
-    res
-      .status(200)
-      .json({
-        message: "Login successful",
-        tokenObject: tokenObject,
-        jwtToken: token,
-      });
+    res.cookie("authToken", token, {
+      httpOnly: false,
+      expiresIn: 4 * 60 * 60 * 1000,
+    });
+    res.status(200).json({
+      message: "Login successful",
+    });
   } catch (error) {
     console.error("Error login user:", error);
     res.status(500).json({ error: "Error login user" });
   }
 };
 
+// GET request to logout user
+const logoutUser = (req, res) => {
+  res.cookie("authToken", " ", {expiresIn: new Date(0)})
+  res.status(200).json({ message: "Logout successful" });
+}
+
 module.exports = {
   registerUser,
   loginUser,
+  logoutUser
 };
